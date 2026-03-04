@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container, Form, Modal, Table } from "react-bootstrap";
 import moment from "moment";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -10,14 +9,12 @@ import axios from "axios";
 const TableData = (props) => {
   const [show, setShow] = useState(false);
   const [transactions, setTransactions] = useState([]);
-  // const [loading, setLoading] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [currId, setCurrId] = useState(null);
   const [refresh, setRefresh] = useState(false);
   const [user, setUser] = useState(null);
 
   const handleEditClick = (itemKey) => {
-    // const buttonId = e.target.id;
     console.log("Clicked button ID:", itemKey);
     if (transactions.length > 0) {
       const editTran = props.data.filter((item) => item._id === itemKey);
@@ -28,40 +25,35 @@ const TableData = (props) => {
   };
 
   const handleEditSubmit = async (e) => {
-    // e.preventDefault();
 
-    const {data} = await axios.put(`${editTransactions}/${currId}`, {
+    const { data } = await axios.put(`${editTransactions}/${currId}`, {
       ...values,
     });
 
-    if(data.success === true){
-
+    if (data.success === true) {
       await handleClose();
       await setRefresh(!refresh);
       window.location.reload();
-    }
-    else{
+    } else {
       console.log("error");
     }
-
-  }
+  };
 
   const handleDeleteClick = async (itemKey) => {
     console.log(user._id);
     console.log("Clicked button ID delete:", itemKey);
     setCurrId(itemKey);
-    const {data} = await axios.post(`${deleteTransactions}/${itemKey}`,{
+
+    const { data } = await axios.post(`${deleteTransactions}/${itemKey}`, {
       userId: props.user._id,
     });
 
-    if(data.success === true){
+    if (data.success === true) {
       await setRefresh(!refresh);
       window.location.reload();
-    }
-    else{
+    } else {
       console.log("error");
     }
-
   };
 
   const [values, setValues] = useState({
@@ -77,42 +69,51 @@ const TableData = (props) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleClose = () => {
-    setShow(false);
-  };
-  const handleShow = () => {
-    setShow(true);
-  };
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     setUser(props.user);
     setTransactions(props.data);
-  }, [props.data,props.user, refresh]);
+  }, [props.data, props.user, refresh]);
 
   return (
-    <>
-      <Container>
-        <Table responsive="md" className="data-table">
-          <thead>
+    <div className="max-w-6xl mx-auto p-4">
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full border border-gray-300">
+
+          <thead className="bg-gray-200">
             <tr>
-              <th>Date</th>
-              <th>Title</th>
-              <th>Amount</th>
-              <th>Type</th>
-              <th>Category</th>
-              <th>Action</th>
+              <th className="p-3 border">Date</th>
+              <th className="p-3 border">Title</th>
+              <th className="p-3 border">Amount</th>
+              <th className="p-3 border">Type</th>
+              <th className="p-3 border">Category</th>
+              <th className="p-3 border">Action</th>
             </tr>
           </thead>
-          <tbody className="text-white">
+
+          <tbody>
             {props.data.map((item, index) => (
-              <tr key={index}>
-                <td>{moment(item.date).format("YYYY-MM-DD")}</td>
-                <td>{item.title}</td>
-                <td>{item.amount}</td>
-                <td>{item.transactionType}</td>
-                <td>{item.category}</td>
-                <td>
-                  <div className="icons-handle">
+              <tr key={index} className="text-center border">
+
+                <td className="p-3 border">
+                  {moment(item.date).format("YYYY-MM-DD")}
+                </td>
+
+                <td className="p-3 border">{item.title}</td>
+
+                <td className="p-3 border">{item.amount}</td>
+
+                <td className="p-3 border">{item.transactionType}</td>
+
+                <td className="p-3 border">{item.category}</td>
+
+                <td className="p-3 border">
+
+                  <div className="flex gap-3 justify-center">
+
                     <EditNoteIcon
                       sx={{ cursor: "pointer" }}
                       key={item._id}
@@ -127,137 +128,190 @@ const TableData = (props) => {
                       onClick={() => handleDeleteClick(item._id)}
                     />
 
-                    {editingTransaction ? (
-                      <>
-                        <div>
-                          <Modal show={show} onHide={handleClose} centered>
-                            <Modal.Header closeButton>
-                              <Modal.Title>
-                                Update Transaction Details
-                              </Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              <Form onSubmit={handleEditSubmit}>
-                                <Form.Group
-                                  className="mb-3"
-                                  controlId="formName"
-                                >
-                                  <Form.Label>Title</Form.Label>
-                                  <Form.Control
-                                    name="title"
-                                    type="text"
-                                    placeholder={editingTransaction[0].title}
-                                    value={values.title}
-                                    onChange={handleChange}
-                                  />
-                                </Form.Group>
-
-                                <Form.Group
-                                  className="mb-3"
-                                  controlId="formAmount"
-                                >
-                                  <Form.Label>Amount</Form.Label>
-                                  <Form.Control
-                                    name="amount"
-                                    type="number"
-                                    placeholder={editingTransaction[0].amount}
-                                    value={values.amount}
-                                    onChange={handleChange}
-                                  />
-                                </Form.Group>
-
-                                <Form.Group
-                                  className="mb-3"
-                                  controlId="formSelect"
-                                >
-                                  <Form.Label>Category</Form.Label>
-                                  <Form.Select
-                                    name="category"
-                                    value={values.category}
-                                    onChange={handleChange}
-                                  >
-                                    <option value="">{editingTransaction[0].category}</option>
-                                    <option value="Groceries">Groceries</option>
-                                    <option value="Rent">Rent</option>
-                                    <option value="Salary">Salary</option>
-                                    <option value="Tip">Tip</option>
-                                    <option value="Food">Food</option>
-                                    <option value="Medical">Medical</option>
-                                    <option value="Utilities">Utilities</option>
-                                    <option value="Entertainment">
-                                      Entertainment
-                                    </option>
-                                    <option value="Transportation">
-                                      Transportation
-                                    </option>
-                                    <option value="Other">Other</option>
-                                  </Form.Select>
-                                </Form.Group>
-
-                                <Form.Group
-                                  className="mb-3"
-                                  controlId="formDescription"
-                                >
-                                  <Form.Label>Description</Form.Label>
-                                  <Form.Control
-                                    type="text"
-                                    name="description"
-                                    placeholder={editingTransaction[0].description}
-                                    value={values.description}
-                                    onChange={handleChange}
-                                  />
-                                </Form.Group>
-
-                                <Form.Group
-                                  className="mb-3"
-                                  controlId="formSelect1"
-                                >
-                                  <Form.Label>Transaction Type</Form.Label>
-                                  <Form.Select
-                                    name="transactionType"
-                                    value={values.transactionType}
-                                    onChange={handleChange}
-                                  >
-                                    <option value={editingTransaction[0].transactionType}>{editingTransaction[0].transactionType}</option>
-                                    <option value="Credit">Credit</option>
-                                    <option value="Expense">Expense</option>
-                                  </Form.Select>
-                                </Form.Group>
-
-                                <Form.Group
-                                  className="mb-3"
-                                  controlId="formDate"
-                                >
-                                  <Form.Label>Date</Form.Label>
-                                  <Form.Control
-                                    type="date"
-                                    name="date"
-                                    value={values.date}
-                                    onChange={handleChange}
-                                  />
-                                </Form.Group>
-                              </Form>
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button variant="secondary" onClick={handleClose}>
-                                Close
-                              </Button>
-                              <Button variant="primary" type="submit" onClick={handleEditSubmit}>Submit</Button>
-                            </Modal.Footer>
-                          </Modal>
-                        </div>
-                      </>
-                    ) : (
-                      <></>
-                    )}
                   </div>
+
+                  {editingTransaction ? (
+
+                    show && (
+
+                      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+
+                        <div className="bg-white w-[500px] rounded-lg shadow-lg p-6">
+
+                          {/* Header */}
+                          <div className="flex justify-between items-center border-b pb-3">
+                            <h2 className="text-lg font-semibold">
+                              Update Transaction Details
+                            </h2>
+
+                            <button
+                              onClick={handleClose}
+                              className="text-xl"
+                            >
+                              ×
+                            </button>
+                          </div>
+
+                          {/* Form */}
+                          <form
+                            onSubmit={handleEditSubmit}
+                            className="space-y-4 mt-4"
+                          >
+
+                            <div>
+                              <label className="block mb-1 font-medium">
+                                Title
+                              </label>
+
+                              <input
+                                name="title"
+                                type="text"
+                                placeholder={editingTransaction[0].title}
+                                value={values.title}
+                                onChange={handleChange}
+                                className="w-full border p-2 rounded"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 font-medium">
+                                Amount
+                              </label>
+
+                              <input
+                                name="amount"
+                                type="number"
+                                placeholder={editingTransaction[0].amount}
+                                value={values.amount}
+                                onChange={handleChange}
+                                className="w-full border p-2 rounded"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 font-medium">
+                                Category
+                              </label>
+
+                              <select
+                                name="category"
+                                value={values.category}
+                                onChange={handleChange}
+                                className="w-full border p-2 rounded"
+                              >
+
+                                <option value="">
+                                  {editingTransaction[0].category}
+                                </option>
+
+                                <option value="Groceries">Groceries</option>
+                                <option value="Rent">Rent</option>
+                                <option value="Salary">Salary</option>
+                                <option value="Tip">Tip</option>
+                                <option value="Food">Food</option>
+                                <option value="Medical">Medical</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Transportation">Transportation</option>
+                                <option value="Other">Other</option>
+
+                              </select>
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 font-medium">
+                                Description
+                              </label>
+
+                              <input
+                                type="text"
+                                name="description"
+                                placeholder={editingTransaction[0].description}
+                                value={values.description}
+                                onChange={handleChange}
+                                className="w-full border p-2 rounded"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 font-medium">
+                                Transaction Type
+                              </label>
+
+                              <select
+                                name="transactionType"
+                                value={values.transactionType}
+                                onChange={handleChange}
+                                className="w-full border p-2 rounded"
+                              >
+
+                                <option value={editingTransaction[0].transactionType}>
+                                  {editingTransaction[0].transactionType}
+                                </option>
+
+                                <option value="Credit">Credit</option>
+                                <option value="Expense">Expense</option>
+
+                              </select>
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 font-medium">
+                                Date
+                              </label>
+
+                              <input
+                                type="date"
+                                name="date"
+                                value={values.date}
+                                onChange={handleChange}
+                                className="w-full border p-2 rounded"
+                              />
+                            </div>
+
+                            {/* Footer */}
+                            <div className="flex justify-end gap-3 pt-4">
+
+                              <button
+                                type="button"
+                                onClick={handleClose}
+                                className="bg-gray-400 text-white px-4 py-2 rounded"
+                              >
+                                Close
+                              </button>
+
+                              <button
+                                type="submit"
+                                onClick={handleEditSubmit}
+                                className="bg-blue-600 text-white px-4 py-2 rounded"
+                              >
+                                Submit
+                              </button>
+
+                            </div>
+
+                          </form>
+
+                        </div>
+
+                      </div>
+
+                    )
+
+                  ) : (
+                    <></>
+                  )}
+
                 </td>
+
               </tr>
             ))}
           </tbody>
-        </Table>
-      </Container>
-    </>
+
+        </table>
+      </div>
+
+    </div>
   );
 };
 

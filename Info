@@ -1,0 +1,9 @@
+A salt is just a random string added to your password before hashing
+salt rounds (also called cost factor).
+It controls:
+
+How many times hashing algorithm runs internally.
+
+5 → fast but less secure
+10 → good balance (most common) 
+12+ → more secure but slower

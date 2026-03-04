@@ -14,7 +14,7 @@ export const addTransactionController = async (req, res) => {
       transactionType,
     } = req.body;
 
-    // console.log(title, amount, description, date, category, userId, transactionType);
+    
 
     if (
       !title ||
@@ -50,7 +50,6 @@ export const addTransactionController = async (req, res) => {
     });
 
     user.transactions.push(newTransaction);
-
     user.save();
 
     return res.status(200).json({
@@ -175,7 +174,7 @@ export const updateTransactionController = async (req, res) => {
     const { title, amount, description, date, category, transactionType } =
       req.body;
 
-    console.log(title, amount, description, date, category, transactionType);
+    //console.log(title, amount, description, date, category, transactionType);
 
     const transactionElement = await Transaction.findById(transactionId);
 

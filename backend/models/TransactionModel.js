@@ -5,8 +5,7 @@ const transactionSchema = new mongoose.Schema({
     title: {
         type: String,
         required: [true, "Title is required"],
-        trim: true,
-        
+        trim: true,  // removes trailing and leading empty spaces        
     },
 
     amount: {
@@ -39,15 +38,22 @@ const transactionSchema = new mongoose.Schema({
 
     user:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-    },
+        ref: 'User', //relationship btw transactions and Users 
 
-    createdAt: {
-        type: Date,
-        default: new Date(),
-    }
 
-});
+        /*
+        {
+  title: "Petrol",
+  amount: 500,
+  user: "65abc"
+}
+        */
+       
+    }},
+   
+     {timestamps : true}
+
+);
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
