@@ -7,6 +7,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import transactionRoutes from "./Routers/Transactions.js";
 import userRoutes from "./Routers/userRouter.js";
+import aiRoutes from "./Routers/aiRouter.js"
 import path from "path";
 
 dotenv.config();
@@ -41,6 +42,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Router
 app.use("/api/v1", transactionRoutes);
 app.use("/api/auth", userRoutes);
+app.use("/api", aiRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

@@ -78,10 +78,10 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
                   <option value="">Choose...</option>
                   <option value="groceries">Groceries</option>
                   <option value="rent">Rent</option>
-                  <option value="rent">Salary</option>
-                  <option value="rent">Tip</option>
-                  <option value="rent">Food</option>
-                  <option value="rent">Medical</option>
+                  <option value="Salary">Salary</option>
+                  <option value="Tip">Tip</option>
+                  <option value="Food">Food</option>
+                  <option value="Medical">Medical</option>
                   <option value="utilities">Utilities</option>
                   <option value="entertainment">Entertainment</option>
                   <option value="transportation">Transportation</option>
@@ -111,9 +111,10 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
                   onChange={handleChange}
                   className="w-full border rounded p-2"
                 >
-                  <option value="">Choose...</option>
+                  
                   <option value="credit">Credit</option>
                   <option value="expense">Expense</option>
+
                 </select>
               </div>
 

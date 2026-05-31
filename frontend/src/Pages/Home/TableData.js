@@ -25,7 +25,6 @@ const TableData = (props) => {
   };
 
   const handleEditSubmit = async (e) => {
-
     const { data } = await axios.put(`${editTransactions}/${currId}`, {
       ...values,
     });
@@ -78,230 +77,208 @@ const TableData = (props) => {
   }, [props.data, props.user, refresh]);
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+    <div className="max-w-7xl mx-auto p-4">
+      <div className="overflow-x-auto rounded-2xl border border-zinc-700 bg-zinc-900/40 shadow-2xl">
+        <table className="min-w-full">
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-300">
-
-          <thead className="bg-gray-200">
+          <thead className="bg-zinc-800 text-white">
             <tr>
-              <th className="p-3 border">Date</th>
-              <th className="p-3 border">Title</th>
-              <th className="p-3 border">Amount</th>
-              <th className="p-3 border">Type</th>
-              <th className="p-3 border">Category</th>
-              <th className="p-3 border">Action</th>
+              <th className="p-4 text-left font-semibold">Date</th>
+              <th className="p-4 text-left font-semibold">Title</th>
+              <th className="p-4 text-left font-semibold">Amount</th>
+              <th className="p-4 text-left font-semibold">Type</th>
+              <th className="p-4 text-left font-semibold">Category</th>
+              <th className="p-4 text-center font-semibold">Action</th>
             </tr>
           </thead>
 
           <tbody>
             {props.data.map((item, index) => (
-              <tr key={index} className="text-center border">
-
-                <td className="p-3 border">
+              <tr
+                key={index}
+                className="border-b border-zinc-700 hover:bg-zinc-800/50 transition-all duration-200"
+              >
+                <td className="p-4 text-gray-300">
                   {moment(item.date).format("YYYY-MM-DD")}
                 </td>
 
-                <td className="p-3 border">{item.title}</td>
+                <td className="p-4 text-white font-medium">
+                  {item.title}
+                </td>
 
-                <td className="p-3 border">{item.amount}</td>
+                <td
+                  className={`p-4 font-bold ${
+                    item.transactionType === "credit"
+                      ? "text-emerald-400"
+                      : "text-red-400"
+                  }`}
+                >
+                  ₹{item.amount}
+                </td>
 
-                <td className="p-3 border">{item.transactionType}</td>
+                <td className="p-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      item.transactionType === "credit"
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : "bg-red-500/20 text-red-400"
+                    }`}
+                  >
+                    {item.transactionType}
+                  </span>
+                </td>
 
-                <td className="p-3 border">{item.category}</td>
+                <td className="p-4">
+                  <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs font-medium">
+                    {item.category}
+                  </span>
+                </td>
 
-                <td className="p-3 border">
+                <td className="p-4">
+                  <div className="flex justify-center gap-3">
 
-                  <div className="flex gap-3 justify-center">
-
-                    <EditNoteIcon
-                      sx={{ cursor: "pointer" }}
-                      key={item._id}
-                      id={item._id}
+                    <button
+                      className="p-2 rounded-lg bg-zinc-800 hover:bg-blue-500/20 transition-all"
                       onClick={() => handleEditClick(item._id)}
-                    />
+                    >
+                      <EditNoteIcon sx={{ color: "#60a5fa" }} />
+                    </button>
 
-                    <DeleteForeverIcon
-                      sx={{ color: "red", cursor: "pointer" }}
-                      key={index}
-                      id={item._id}
+                    <button
+                      className="p-2 rounded-lg bg-zinc-800 hover:bg-red-500/20 transition-all"
                       onClick={() => handleDeleteClick(item._id)}
-                    />
+                    >
+                      <DeleteForeverIcon sx={{ color: "#ef4444" }} />
+                    </button>
 
                   </div>
 
-                  {editingTransaction ? (
-
+                  {editingTransaction &&
                     show && (
+                      <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
 
-                      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+                        <div className="bg-zinc-900 border border-zinc-700 w-[500px] rounded-2xl shadow-2xl p-6">
 
-                        <div className="bg-white w-[500px] rounded-lg shadow-lg p-6">
-
-                          {/* Header */}
-                          <div className="flex justify-between items-center border-b pb-3">
-                            <h2 className="text-lg font-semibold">
-                              Update Transaction Details
+                          <div className="flex justify-between items-center border-b border-zinc-700 pb-3">
+                            <h2 className="text-xl font-bold text-white">
+                              Update Transaction
                             </h2>
 
                             <button
                               onClick={handleClose}
-                              className="text-xl"
+                              className="text-zinc-400 hover:text-white text-2xl"
                             >
                               ×
                             </button>
                           </div>
 
-                          {/* Form */}
-                          <form
-                            onSubmit={handleEditSubmit}
-                            className="space-y-4 mt-4"
-                          >
+                         <form
+  onSubmit={handleEditSubmit}
+  className="space-y-4 mt-5"
+>
 
-                            <div>
-                              <label className="block mb-1 font-medium">
-                                Title
-                              </label>
+  <div>
+    <label className="block mb-1 text-sm font-medium text-zinc-400">Title</label>
+    <input
+      name="title"
+      placeholder={editingTransaction[0].title}
+      value={values.title}
+      onChange={handleChange}
+      className="w-full bg-zinc-800 border border-zinc-700 text-white p-3 rounded-lg"
+    />
+  </div>
 
-                              <input
-                                name="title"
-                                type="text"
-                                placeholder={editingTransaction[0].title}
-                                value={values.title}
-                                onChange={handleChange}
-                                className="w-full border p-2 rounded"
-                              />
-                            </div>
+  <div>
+    <label className="block mb-1 text-sm font-medium text-zinc-400">Amount</label>
+    <input
+      name="amount"
+      type="number"
+      placeholder={editingTransaction[0].amount}
+      value={values.amount}
+      onChange={handleChange}
+      className="w-full bg-zinc-800 border border-zinc-700 text-white p-3 rounded-lg"
+    />
+  </div>
 
-                            <div>
-                              <label className="block mb-1 font-medium">
-                                Amount
-                              </label>
+  <div>
+    <label className="block mb-1 text-sm font-medium text-zinc-400">Category</label>
+    <select
+      name="category"
+      value={values.category}
+      onChange={handleChange}
+      className="w-full bg-zinc-800 border border-zinc-700 text-white p-3 rounded-lg"
+    >
+      <option value="">{editingTransaction[0].category}</option>
+      <option value="Groceries">Groceries</option>
+      <option value="Rent">Rent</option>
+      <option value="Salary">Salary</option>
+      <option value="Tip">Tip</option>
+      <option value="Food">Food</option>
+      <option value="Medical">Medical</option>
+      <option value="Utilities">Utilities</option>
+      <option value="Entertainment">Entertainment</option>
+      <option value="Transportation">Transportation</option>
+      <option value="Other">Other</option>
+    </select>
+  </div>
 
-                              <input
-                                name="amount"
-                                type="number"
-                                placeholder={editingTransaction[0].amount}
-                                value={values.amount}
-                                onChange={handleChange}
-                                className="w-full border p-2 rounded"
-                              />
-                            </div>
+  <div>
+    <label className="block mb-1 text-sm font-medium text-zinc-400">Description</label>
+    <input
+      name="description"
+      placeholder={editingTransaction[0].description}
+      value={values.description}
+      onChange={handleChange}
+      className="w-full bg-zinc-800 border border-zinc-700 text-white p-3 rounded-lg"
+    />
+  </div>
 
-                            <div>
-                              <label className="block mb-1 font-medium">
-                                Category
-                              </label>
+  <div>
+    <label className="block mb-1 text-sm font-medium text-zinc-400">Transaction Type</label>
+    <select
+  name="transactionType"
+  value={values.transactionType || editingTransaction[0].transactionType}
+  onChange={handleChange}
+  className="w-full bg-zinc-800 border border-zinc-700 text-white p-3 rounded-lg"
+>
+  <option value="credit">Credit</option>
+  <option value="expense">Expense</option>
+</select>
+  </div>
 
-                              <select
-                                name="category"
-                                value={values.category}
-                                onChange={handleChange}
-                                className="w-full border p-2 rounded"
-                              >
+  <div>
+    <label className="block mb-1 text-sm font-medium text-zinc-400">Date</label>
+    <input
+      type="date"
+      name="date"
+      value={values.date}
+      onChange={handleChange}
+      className="w-full bg-zinc-800 border border-zinc-700 text-white p-3 rounded-lg"
+    />
+  </div>
 
-                                <option value="">
-                                  {editingTransaction[0].category}
-                                </option>
+  <div className="flex justify-end gap-3 pt-4">
+    <button
+      type="button"
+      onClick={handleClose}
+      className="px-5 py-2 rounded-lg bg-zinc-700 text-white"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      className="px-5 py-2 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400"
+    >
+      Save Changes
+    </button>
+  </div>
 
-                                <option value="Groceries">Groceries</option>
-                                <option value="Rent">Rent</option>
-                                <option value="Salary">Salary</option>
-                                <option value="Tip">Tip</option>
-                                <option value="Food">Food</option>
-                                <option value="Medical">Medical</option>
-                                <option value="Utilities">Utilities</option>
-                                <option value="Entertainment">Entertainment</option>
-                                <option value="Transportation">Transportation</option>
-                                <option value="Other">Other</option>
-
-                              </select>
-                            </div>
-
-                            <div>
-                              <label className="block mb-1 font-medium">
-                                Description
-                              </label>
-
-                              <input
-                                type="text"
-                                name="description"
-                                placeholder={editingTransaction[0].description}
-                                value={values.description}
-                                onChange={handleChange}
-                                className="w-full border p-2 rounded"
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block mb-1 font-medium">
-                                Transaction Type
-                              </label>
-
-                              <select
-                                name="transactionType"
-                                value={values.transactionType}
-                                onChange={handleChange}
-                                className="w-full border p-2 rounded"
-                              >
-
-                                <option value={editingTransaction[0].transactionType}>
-                                  {editingTransaction[0].transactionType}
-                                </option>
-
-                                <option value="Credit">Credit</option>
-                                <option value="Expense">Expense</option>
-
-                              </select>
-                            </div>
-
-                            <div>
-                              <label className="block mb-1 font-medium">
-                                Date
-                              </label>
-
-                              <input
-                                type="date"
-                                name="date"
-                                value={values.date}
-                                onChange={handleChange}
-                                className="w-full border p-2 rounded"
-                              />
-                            </div>
-
-                            {/* Footer */}
-                            <div className="flex justify-end gap-3 pt-4">
-
-                              <button
-                                type="button"
-                                onClick={handleClose}
-                                className="bg-gray-400 text-white px-4 py-2 rounded"
-                              >
-                                Close
-                              </button>
-
-                              <button
-                                type="submit"
-                                onClick={handleEditSubmit}
-                                className="bg-blue-600 text-white px-4 py-2 rounded"
-                              >
-                                Submit
-                              </button>
-
-                            </div>
-
-                          </form>
+</form>
 
                         </div>
 
                       </div>
-
-                    )
-
-                  ) : (
-                    <></>
-                  )}
-
+                    )}
                 </td>
 
               </tr>
@@ -310,7 +287,6 @@ const TableData = (props) => {
 
         </table>
       </div>
-
     </div>
   );
 };

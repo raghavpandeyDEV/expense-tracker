@@ -40,30 +40,28 @@ const Analytics = ({ transactions }) => {
   const TurnOverExpensePercent = (totalTurnOverExpense / totalTurnOver) * 100;
 
   const categories = [
-    "Groceries",
-    "Rent",
-    "Salary",
-    "Tip",
-    "Food",
-    "Medical",
-    "Utilities",
-    "Entertainment",
-    "Transportation",
-    "Other",
-  ];
+  "Income",
+  "Food",
+  "Transport",
+  "Shopping",
+  "Bills",
+  "Entertainment",
+  "Healthcare",
+  "Education",
+  "Other",
+];
 
   const colors = {
-    Groceries: "#FF6384",
-    Rent: "#36A2EB",
-    Salary: "#FFCE56",
-    Tip: "#4BC0C0",
-    Food: "#9966FF",
-    Medical: "#FF9F40",
-    Utilities: "#8AC926",
-    Entertainment: "#6A4C93",
-    Transportation: "#1982C4",
-    Other: "#F45B69",
-  };
+  Income: "#22c55e",
+  Food: "#9966FF",
+  Transport: "#1982C4",
+  Shopping: "#f97316",
+  Bills: "#ef4444",
+  Entertainment: "#6A4C93",
+  Healthcare: "#14b8a6",
+  Education: "#eab308",
+  Other: "#F45B69",
+};
 
   return (
     <div className="max-w-7xl mx-auto mt-10 px-4">

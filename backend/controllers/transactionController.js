@@ -1,27 +1,39 @@
 import Transaction from "../models/TransactionModel.js";
 import User from "../models/UserSchema.js";
 import moment from "moment";
+import { categorizeExpense } from "../utils/gemini.js";
+
 
 export const addTransactionController = async (req, res) => {
   try {
-    const {
-      title,
-      amount,
-      description,
-      date,
-      category,
-      userId,
-      transactionType,
-    } = req.body;
+   const {
+  title,
+  amount,
+  description,
+  date,
+  userId,
+  transactionType,
+} = req.body;
 
+let category = "Income";
+
+if (transactionType === "expense") {
+  try {
+    category = await categorizeExpense(
+      `${title} ${description}`
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
     
+
 
     if (
       !title ||
       !amount ||
       !description ||
       !date ||
-      !category ||
       !transactionType
     ) {
       return res.status(408).json({
@@ -46,7 +58,7 @@ export const addTransactionController = async (req, res) => {
       description: description,
       date: date,
       user: userId,
-      transactionType: transactionType,
+      transactionType: transactionType.toLowerCase(),
     });
 
     user.transactions.push(newTransaction);
@@ -68,7 +80,7 @@ export const getAllTransactionController = async (req, res) => {
   try {
     const { userId, type, frequency, startDate, endDate } = req.body;
 
-    console.log(userId, type, frequency, startDate, endDate);
+    //console.log(userId, type, frequency, startDate, endDate);
 
     const user = await User.findById(userId);
 
@@ -167,12 +179,12 @@ export const deleteTransactionController = async (req, res) => {
   }
 };
 
+
 export const updateTransactionController = async (req, res) => {
   try {
     const transactionId = req.params.id;
 
-    const { title, amount, description, date, category, transactionType } =
-      req.body;
+    const { title, amount, description, date, category, transactionType } = req.body;
 
     //console.log(title, amount, description, date, category, transactionType);
 
@@ -207,7 +219,7 @@ export const updateTransactionController = async (req, res) => {
     if (date) {
       transactionElement.date = date;
     }
-
+    
     await transactionElement.save();
 
     // await transactionElement.remove();
